@@ -56,6 +56,24 @@ class GradientImageGenerater:
         else:
             raise ValueError("Invalid use")
 
+    def generate_and_save(
+        self,
+        width: int,
+        height: int,
+        start_color: Tuple[int, int, int] | str,
+        end_color: Tuple[int, int, int] | str,
+        filename: str,
+    ) -> None:
+        """生成渐变色图片并保存"""
+        pixels = self.generate(width, height, start_color, end_color)
+        if self.use == "cv":
+            cv2.imwrite(filename, pixels)
+        elif self.use == "pillow":
+            image = Image.fromarray(pixels)
+            image.save(filename)
+        else:
+            raise ValueError("Invalid use")
+
     def _generate_numpy(
         self,
         width: int,
@@ -204,4 +222,7 @@ if __name__ == "__main__":
     print(f"屏幕分辨率: {width}x{height}")
     color = get_color(0)
     generater = GradientImageGenerater("cv")
-    generater.generate_and_show(width, height, color[0], color[1])
+    # 保存到
+    generater.generate_and_save(
+        width, height, color[0], color[1], f"img/{len(os.listdir('img')) + 1}.png"
+    )
